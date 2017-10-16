@@ -1,0 +1,7 @@
+F:\code\Lkl-Test1\CloudCert\CloudCert\bin\Debug\CloudCert.exe.config
+F:\code\Lkl-Test1\CloudCert\CloudCert\bin\Debug\CloudCert.exe
+F:\code\Lkl-Test1\CloudCert\CloudCert\bin\Debug\CloudCert.pdb
+F:\code\Lkl-Test1\CloudCert\CloudCert\obj\Debug\CloudCert.csprojResolveAssemblyReference.cache
+F:\code\Lkl-Test1\CloudCert\CloudCert\obj\Debug\CloudCert.exe
+F:\code\Lkl-Test1\CloudCert\CloudCert\obj\Debug\CloudCert.pdb
+F:\code\Lkl-Test1\CloudCert\CloudCert\bin\Debug\Newtonsoft.Json.dll
