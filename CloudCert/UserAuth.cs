@@ -29,6 +29,11 @@ namespace CloudCert
 
            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str);
 
+            //{
+            //    "account_exist":"true",
+            //    "account_permission":"false"
+            //}
+
         }
 
         /// <summary>
@@ -49,7 +54,9 @@ namespace CloudCert
 
             string str = AppHelp.post(apiPath, par);
 
-            return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(str)["user_id"];
+
+            //return str;
             // "{\"user_id\":\"5290049\"}"
         }
 
@@ -58,7 +65,7 @@ namespace CloudCert
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public string AaccessToken(string userId)
+        public string AccessToken(string userId)
         {
             string apiPath = "opencloud/api/account/access_token.json";
 
@@ -71,7 +78,7 @@ namespace CloudCert
 
             string str = AppHelp.get(apiPath, par);
 
-            return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(str)["access_token"];
 
         }
 
@@ -80,7 +87,7 @@ namespace CloudCert
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public string GetAccountVerify(string accessToken)
+        public bool GetAccountVerify(string accessToken)
         {
             string apiPath = "opencloud/api/account/verify.json";
 
@@ -91,8 +98,8 @@ namespace CloudCert
 
             string str = AppHelp.get(apiPath, par);
 
-            return str;
-
+            //return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["verify"];
             //{"verify":false}
 
         }
@@ -105,7 +112,7 @@ namespace CloudCert
         /// <param name="card"></param>
         /// <param name="bank"></param>
         /// <returns></returns>
-        public string CreateAccountVerify(string accessToken,string realName, string card ,string bank)
+        public bool CreateAccountVerify(string accessToken,string realName, string card ,string bank)
         {
             string apiPath = "opencloud/api/account/verify.json";
 
@@ -121,7 +128,7 @@ namespace CloudCert
 
             string str = AppHelp.post(apiPath, par);
 
-            return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["verify"] ;
 
             //{"verify":true}
 
@@ -134,7 +141,7 @@ namespace CloudCert
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public string GetAccountStamp(string accessToken)
+        public bool GetAccountStamp(string accessToken)
         {
             string apiPath = "opencloud/api/account/stamp.json";
 
@@ -146,7 +153,9 @@ namespace CloudCert
 
             string str = AppHelp.get(apiPath, par);
 
-            return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["stamp"];
+
+           // return str;
 
             //{"stamp":":false}
         }
@@ -161,7 +170,7 @@ namespace CloudCert
         /// <param name="stamp"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string CreateAccountStamp(string accessToken, string realName, string card, string stamp, string type)
+        public bool CreateAccountStamp(string accessToken, string realName, string card, string stamp, string type)
         {
 
 
@@ -179,7 +188,9 @@ namespace CloudCert
 
             string str = AppHelp.post(apiPath, par);
 
-            return str;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["stamp"];
+
+            //return str;
 
             //{"stamp":":true}
         }
@@ -191,7 +202,7 @@ namespace CloudCert
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public string AccountCertItrus(string accessToken)
+        public bool AccountCertItrus(string accessToken)
         {
             string apiPath = "opencloud/api/account/cert/itrus.json";
 
@@ -202,8 +213,8 @@ namespace CloudCert
 
             string str = AppHelp.post(apiPath, par);
 
-            return str;
-
+           
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["cert_install"];
 
             //{"cert_install":true}
         }

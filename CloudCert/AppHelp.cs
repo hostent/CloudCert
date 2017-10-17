@@ -45,8 +45,9 @@ namespace CloudCert
             return HttpClientHelp.Get(AppHelp.basrUrl + apiPath, fillSign(par));
         }
 
-        public static string postFile(string apiPath, Dictionary<string, string> par,byte[] bFile)
+        public static string postFile(string apiPath, Dictionary<string, string> par,byte[] bFile,string fileName)
         {
+            par = fillSign(par);
             string parUrl = "";
 
             foreach (var item in par)
@@ -60,7 +61,7 @@ namespace CloudCert
                 parUrl = "?" + parUrl;
             }            
 
-            return HttpClientHelp.PostFile(AppHelp.basrUrl + apiPath+ parUrl, bFile);
+            return HttpClientHelp.PostFile(AppHelp.basrUrl + apiPath+ parUrl, bFile, fileName);
         }
 
         static Dictionary<string, string> fillSign(Dictionary<string, string> dict)
@@ -79,7 +80,8 @@ namespace CloudCert
                     continue;
                 }
 
-                str = str + item.Key + "=" + MyEncoding.UrlEncode(item.Value) + "&";
+                //str = str + item.Key + "=" + MyEncoding.UrlEncode(item.Value) + "&";
+                str = str + item.Key + "=" + item.Value + "&";
 
             }
 

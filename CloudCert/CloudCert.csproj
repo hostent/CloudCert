@@ -47,8 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountFile.cs" />
+    <Compile Include="Folw.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StampUserAgreement.cs" />
     <Compile Include="Tools\Sha1Help.cs" />
     <Compile Include="Tools\HttpClientHelp.cs" />
     <Compile Include="Tools\MD5Helper.cs" />

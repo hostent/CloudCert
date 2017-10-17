@@ -183,7 +183,7 @@ namespace CloudCert.Tools
         }
 
 
-        public static string PostFile(string url, byte[] bFile)
+        public static string PostFile(string url, byte[] bFile,string fileName)
         {
 
             try
@@ -198,25 +198,44 @@ namespace CloudCert.Tools
 
                 request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
-                request.ContentType = "multipart/form-data";
                 request.KeepAlive = false;
                 request.ProtocolVersion = HttpVersion.Version10;
-                //向请求添加表单数据
-                byte[] postdatabyte = bFile;
-                request.ContentLength = postdatabyte.Length;
+
+                string boundary = DateTime.Now.Ticks.ToString("X"); // 随机分隔线
+                request.ContentType = "multipart/form-data;boundary=" + boundary;
+                byte[] itemBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
+                byte[] endBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+
+                // 请求头部信息
+                StringBuilder sbHeader = new StringBuilder(string.Format("Content-Disposition:form-data;name=\"file\";filename=\"{0}\"\r\nContent-Type:application/octet-stream\r\n\r\n", fileName));
+                byte[] postHeaderBytes = Encoding.UTF8.GetBytes(sbHeader.ToString());
+
                 Stream stream = request.GetRequestStream();
-                stream.Write(postdatabyte, 0, postdatabyte.Length); //设置请求主体的内容
+
+                stream.Write(itemBoundaryBytes, 0, itemBoundaryBytes.Length);
+                stream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+                stream.Write(bFile, 0, bFile.Length);
+                stream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+
+ 
                 stream.Close();
 
-                response = (HttpWebResponse)request.GetResponse();
+                try
+                {
+                    response = (HttpWebResponse)request.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
                 Stream responseStream = response.GetResponseStream();
                 StreamReader responseReader = new StreamReader(responseStream);
                 return responseReader.ReadToEnd();
             }
             catch (Exception e)
             {
-
-                return "";
+                throw e;
+                
             }
         }
 
