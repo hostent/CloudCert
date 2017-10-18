@@ -128,7 +128,7 @@ namespace CloudCert
 
             //return strRep;
 
-            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(str);
+            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(strRep);
 
             return dict["stamps"][0]["file_id"];
 

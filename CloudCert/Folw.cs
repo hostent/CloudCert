@@ -35,6 +35,18 @@ namespace CloudCert
             return accessToken;
         }
 
+        public string GetAccessToken(string userId)
+        {
+            UserAuth ua = new UserAuth();
+
+
+            var accessToken = ua.AccessToken(userId);
+
+            return accessToken;
+        }
+
+
+
         /// <summary>
         /// 2. 上传文件 返回 fileId，这个ID也要存储起来
         /// </summary>
@@ -105,11 +117,11 @@ namespace CloudCert
         /// </summary>
         /// <param name="fileId"></param>
         /// <param name="stampUserAgreements"></param>
-        public string Stamp(string fileId,StampUserAgreement stampUserAgreements)
+        public string Stamp(string contract_id, StampUserAgreement stampUserAgreements)
         {
             AccountFile af = new AccountFile();
 
-            var result = af.Stamp(fileId, 0,stampUserAgreements);
+            var result = af.Stamp(contract_id, 0,stampUserAgreements);
 
             return result;
         }
