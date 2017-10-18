@@ -40,7 +40,17 @@ namespace CloudCert.Tools
                 webReq.ContentType = "text/html;charset=UTF-8";
                 webReq.ProtocolVersion = HttpVersion.Version10;
 
-                HttpWebResponse response = (HttpWebResponse)webReq.GetResponse();
+
+                HttpWebResponse response = null;
+                try
+                {
+                    response = (HttpWebResponse)webReq.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
+
                 StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
                 ret = sr.ReadToEnd();
                 sr.Close();
@@ -52,6 +62,73 @@ namespace CloudCert.Tools
                 throw ex;
             }
             return ret;
+        }
+
+
+        public static byte[] GetFile(string url, IDictionary<string, string> par, IDictionary<string, string> head = null)
+        {
+
+
+            string ret = string.Empty;
+            try
+            {
+                String str = "";
+
+                foreach (var item in par)
+                {
+                    str = str + item.Key + "=" + MyEncoding.UrlEncode(item.Value) + "&";
+                }
+                str = str.TrimEnd('&');
+
+                url = url + "?" + str;
+
+                if (url.ToLower().StartsWith("https://"))
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+                }
+
+
+                HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(new Uri(url));
+
+                webReq.Method = "GET";
+                webReq.ContentType = "text/html;charset=UTF-8";
+                webReq.ProtocolVersion = HttpVersion.Version10;
+
+
+                HttpWebResponse response = null;
+                try
+                {
+                    response = (HttpWebResponse)webReq.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+
+                    StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    ret = sr.ReadToEnd();
+                    sr.Close();
+                    response.Close();
+                }
+
+                Stream stream = response.GetResponseStream();
+
+                StreamReader srsr = new StreamReader(response.GetResponseStream());
+
+                string srsrStr = srsr.ReadToEnd();
+
+                srsr.Close();
+
+
+                return Encoding.UTF8.GetBytes(srsrStr);
+
+ 
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+ 
         }
 
         public static string Post(string url, string body, IDictionary<string, string> head = null)
@@ -72,15 +149,23 @@ namespace CloudCert.Tools
                 byte[] bytes = Encoding.UTF8.GetBytes(body); //转化
                 var text = Convert.ToBase64String(bytes);
 
-                //text = MyEncoding.UrlEncode(text);
-               // text = "data=" + text;
-                //bytes = Encoding.UTF8.GetBytes(text);
+
 
                 webReq.ContentLength = bytes.Length;
                 Stream newStream = webReq.GetRequestStream();
                 newStream.Write(bytes, 0, bytes.Length);//写入参数
                 newStream.Close();
-                HttpWebResponse response = (HttpWebResponse)webReq.GetResponse();
+
+                HttpWebResponse response = null;
+                try
+                {
+                    response = (HttpWebResponse)webReq.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
+
                 StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
                 ret = sr.ReadToEnd();
                 sr.Close();
@@ -131,7 +216,15 @@ namespace CloudCert.Tools
                 Stream newStream = webReq.GetRequestStream();
                 newStream.Write(bytes, 0, bytes.Length);//写入参数
                 newStream.Close();
-                HttpWebResponse response = (HttpWebResponse)webReq.GetResponse();
+                HttpWebResponse response = null;
+                try
+                {
+                    response = (HttpWebResponse)webReq.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
                 StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
                 ret = sr.ReadToEnd();
                 sr.Close();
@@ -170,7 +263,15 @@ namespace CloudCert.Tools
                 stream.Write(postdatabyte, 0, postdatabyte.Length); //设置请求主体的内容
                 stream.Close();
 
-                response = (HttpWebResponse)request.GetResponse();
+     
+                try
+                {
+                    response = (HttpWebResponse)request.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
                 Stream responseStream = response.GetResponseStream();
                 StreamReader responseReader = new StreamReader(responseStream);
                 return responseReader.ReadToEnd();

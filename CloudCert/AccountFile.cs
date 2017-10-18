@@ -22,7 +22,7 @@ namespace CloudCert
         /// <returns></returns>
         public string FileCreate(string accessToken, string fileId, string fileName, long length, string hash, string comment)
         {
-            string apiPath = "opencloud/api/file/create.json";
+            string apiPath = "opencloud/api/contract/create.json";
 
             Dictionary<string, string> par = new Dictionary<string, string>();
 
@@ -39,13 +39,13 @@ namespace CloudCert
             string str = AppHelp.post(apiPath, par);
 
             var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(str);
-            if(dict.ContainsKey("file_id"))
+            if(dict.ContainsKey("contract_id"))
             {
-                return dict["file_id"];
+                return dict["contract_id"];
             }
 
             return "";
-            // {"file_id":"2016127"}
+            // {"contract_id":"2016127"}
         }
 
         /// <summary>
@@ -55,19 +55,19 @@ namespace CloudCert
         /// <param name="fileId"></param>
         /// <param name="bFile">这个byte，不能从文件中读取，要从post过来的字节流中读取</param>
         /// <returns></returns>
-        public string FileUpload(string fileId, byte[] bFile,long index)
+        public string FileUpload(string contract_id, byte[] bFile,long index)
         {
 
 
-            string apiPath = "opencloud/api/file/upload.json";
+            string apiPath = "opencloud/api/contract/upload.json";
 
             Dictionary<string, string> par = new Dictionary<string, string>();
 
             par["app_key"] = AppHelp.key;
-            par["file_id"] = fileId;
+            par["contract_id"] = contract_id;
             par["index"] = index.ToString(); 
 
-            string str = AppHelp.postFile(apiPath, par, bFile, fileId);
+            string str = AppHelp.postFile(apiPath, par, bFile, contract_id);
 
             return str;
 
@@ -77,16 +77,16 @@ namespace CloudCert
         /// <summary>
         /// 获取已上传的文件
         /// </summary>
-        /// <param name="fileId"></param>
+        /// <param name="contract_id"></param>
         /// <returns></returns>
-        public long GetFileLength(string fileId)
+        public long GetFileLength(string contract_id)
         {
-            string apiPath = "opencloud/api/file/length.json";
+            string apiPath = "opencloud/api/contract/length.json";
 
             Dictionary<string, string> par = new Dictionary<string, string>();
 
             par["app_key"] = AppHelp.key;
-            par["file_id"] = fileId;
+            par["contract_id"] = contract_id;
 
 
             string str = AppHelp.get(apiPath, par);
@@ -102,38 +102,55 @@ namespace CloudCert
 
         }
 
-
-
-
         /// <summary>
         /// 合同签章
         /// </summary>
-        /// <param name="fileId"></param>
-        /// <returns></returns>
-        public string Stamp(string fileId, List<StampUserAgreement> stampUserAgreements)
+        /// <param name="contract_id"></param>
+        /// <returns>文件ID</returns>
+        public string Stamp(string contract_id, int status, StampUserAgreement stampUserAgreements)
         {
-            string apiPath = "opencloud/api/file/stamp.json";
+            string apiPath = "opencloud/api/contract/stamp.json";
 
-            string str = "";
+            string str = stampUserAgreements.toString();
 
-            stampUserAgreements.ForEach(q =>
-            {
-                str = str + "|" + q.toString();
-            });
-
-            str = str.Trim('|');
 
             Dictionary<string, string> par = new Dictionary<string, string>();
 
             par["app_key"] = AppHelp.key;
-            par["file_id"] = fileId;
+            par["contract_id"] = contract_id;
 
-            par["param"] = str; // todo
+            par["status"] = status.ToString();
+
+            par["param"] = str;  
 
 
             string strRep = AppHelp.post(apiPath, par);
 
-            return strRep;
+            //return strRep;
+
+            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(str);
+
+            return dict["stamps"][0]["file_id"];
+
+           // Dictionary < string, List<Dictionary<string,string>>>
+
+            //{"stamps":[{"user_id":"5290049","file_id":"2100835"}]}
+        }
+
+
+        public byte[] DownloadFile(string contract_id)
+        {
+            string apiPath = "opencloud/api/contract/download.json";
+
+            Dictionary<string, string> par = new Dictionary<string, string>();
+
+            par["app_key"] = AppHelp.key;
+            par["contract_id"] = contract_id;
+
+            byte[] b = AppHelp.getFile(apiPath, par);
+
+            return b;
+
         }
 
     }

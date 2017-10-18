@@ -35,6 +35,11 @@ namespace CloudCert
             }
         }
 
+        public static string postNoSign(string apiPath, Dictionary<string, string> par)
+        {
+            return HttpClientHelp.Post(AppHelp.basrUrl + apiPath, par);
+        }
+
         public static string post(string apiPath, Dictionary<string, string> par)
         {
             return HttpClientHelp.Post(AppHelp.basrUrl + apiPath, fillSign(par));
@@ -43,6 +48,10 @@ namespace CloudCert
         public static string get(string apiPath, Dictionary<string, string> par)
         {
             return HttpClientHelp.Get(AppHelp.basrUrl + apiPath, fillSign(par));
+        }
+        public static byte[] getFile(string apiPath, Dictionary<string, string> par)
+        {
+            return HttpClientHelp.GetFile(AppHelp.basrUrl + apiPath, fillSign(par));
         }
 
         public static string postFile(string apiPath, Dictionary<string, string> par,byte[] bFile,string fileName)

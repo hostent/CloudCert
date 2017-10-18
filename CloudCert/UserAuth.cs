@@ -14,7 +14,7 @@ namespace CloudCert
         /// </summary>
         /// <param name="outId"></param>
         /// <returns></returns>
-        public Dictionary<string,bool> AccountExist(string outId)
+        public Dictionary<string, bool> AccountExist(string outId)
         {
             string apiPath = "opencloud/api/account/exist.json";
 
@@ -27,7 +27,7 @@ namespace CloudCert
 
             string str = AppHelp.get(apiPath, par);
 
-           return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str);
 
             //{
             //    "account_exist":"true",
@@ -93,7 +93,7 @@ namespace CloudCert
 
             Dictionary<string, string> par = new Dictionary<string, string>();
 
-            par["access_token"] = accessToken;        
+            par["access_token"] = accessToken;
 
 
             string str = AppHelp.get(apiPath, par);
@@ -112,7 +112,7 @@ namespace CloudCert
         /// <param name="card"></param>
         /// <param name="bank"></param>
         /// <returns></returns>
-        public bool CreateAccountVerify(string accessToken,string realName, string card ,string bank)
+        public bool CreateAccountVerify(string accessToken, string realName, string card, string bank)
         {
             string apiPath = "opencloud/api/account/verify.json";
 
@@ -122,13 +122,15 @@ namespace CloudCert
             par["real_name"] = realName;
             par["card"] = card;
             par["bank"] = bank;
-           
+
 
 
 
             string str = AppHelp.post(apiPath, par);
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["verify"] ;
+            //{"verify":true,"verify_msg":"认证通过","verify_statecode":0}
+
+            return Convert.ToBoolean(Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(str)["verify"]);
 
             //{"verify":true}
 
@@ -155,7 +157,7 @@ namespace CloudCert
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["stamp"];
 
-           // return str;
+            // return str;
 
             //{"stamp":":false}
         }
@@ -181,12 +183,18 @@ namespace CloudCert
             par["access_token"] = accessToken;
             par["real_name"] = realName;
             par["card"] = card;
-            par["stamp"] = stamp;
-            par["type"] = type;
+            if (!string.IsNullOrEmpty(stamp))
+            {
+                par["stamp"] = stamp;
+            }
+            if (!string.IsNullOrEmpty(type))
+            {
+                par["type"] = type;
+            }
 
 
 
-            string str = AppHelp.post(apiPath, par);
+            string str = AppHelp.postNoSign(apiPath, par);
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["stamp"];
 
@@ -213,7 +221,7 @@ namespace CloudCert
 
             string str = AppHelp.post(apiPath, par);
 
-           
+
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(str)["cert_install"];
 
             //{"cert_install":true}

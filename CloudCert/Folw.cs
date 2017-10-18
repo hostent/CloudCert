@@ -82,13 +82,13 @@ namespace CloudCert
 
             UserAuth ua = new UserAuth();
 
-            if (ua.GetAccountVerify(accessToken))
+            if (!ua.GetAccountVerify(accessToken))
             {
                var averify = ua.CreateAccountVerify(accessToken, realName, card, bank);
             }
 
             //生成签章
-            if(ua.GetAccountStamp(accessToken))
+            if(!ua.GetAccountStamp(accessToken))
             {
                 var astamp =  ua.CreateAccountStamp(accessToken, realName, card, stamp, stampType);
 
@@ -101,16 +101,27 @@ namespace CloudCert
 
 
         /// <summary>
-        /// 4. 签章，多个用户
+        /// 4. 签章，一个个签
         /// </summary>
         /// <param name="fileId"></param>
         /// <param name="stampUserAgreements"></param>
-        public void Stamp(string fileId,List<StampUserAgreement> stampUserAgreements)
+        public string Stamp(string fileId,StampUserAgreement stampUserAgreements)
         {
             AccountFile af = new AccountFile();
 
-            var result = af.Stamp(fileId, stampUserAgreements);
+            var result = af.Stamp(fileId, 0,stampUserAgreements);
+
+            return result;
         }
 
+        /// <summary>
+        /// 5. 下载文件
+        /// </summary>
+        /// <param name="contract_id">合同号，之前上传文件的时候，创建的合同</param>
+        /// <returns></returns>
+        public byte[] DownloadFile(string contract_id)
+        {
+            return new AccountFile().DownloadFile(contract_id);
+        }
     }
 }
