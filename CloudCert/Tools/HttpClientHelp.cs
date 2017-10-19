@@ -109,19 +109,29 @@ namespace CloudCert.Tools
                     sr.Close();
                     response.Close();
                 }
-
                 Stream stream = response.GetResponseStream();
 
-                StreamReader srsr = new StreamReader(response.GetResponseStream());
+                // 网络只能从头开始读取，所以先读取到 MemoryStream，在分配字节大小。
+                MemoryStream outstream = new MemoryStream();
+                const int bufferLen = 1024;
+                byte[] buffer = new byte[bufferLen];
+                int count = 0;
+                while ((count = stream.Read(buffer, 0, bufferLen)) > 0)
+                {
+                    outstream.Write(buffer, 0, count);
+                }
 
-                string srsrStr = srsr.ReadToEnd();
+                outstream.Seek(0, SeekOrigin.Begin);
+                int buffsize = (int)outstream.Length;  
+                byte[] bytes = new byte[buffsize];
 
-                srsr.Close();
+                outstream.Read(bytes, 0, buffsize);
+                outstream.Flush();
+                outstream.Close();
+
+                return bytes;
 
 
-                return Encoding.UTF8.GetBytes(srsrStr);
-
- 
             }
             catch (Exception ex)
             {

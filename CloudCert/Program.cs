@@ -21,30 +21,30 @@ namespace CloudCert
             // var result = new AccountFile().FileCreate("3a439c1f-8ba8-4fba-97ba-797a074e6976",
             //     "2017101616331900004", "测试文件01", 8, "128d70ki78j38d9", "测试文件01-beizhu");
 
-            /* 上传文件
-                       string userId = "5290049";
+            /* 上传文件  */
+            string userId = "5290049";
 
-                       string accessToken = "935d8fce-36df-4b15-acfd-3dfc46e17fd4";
-
-
+            string accessToken = "935d8fce-36df-4b15-acfd-3dfc46e17fd4";
 
 
-                       byte[] b = File.ReadAllBytes(@"G:\test01-stamp.pdf");
-
-                       string hash = Sha1Help.Encrypt_Sha1_16(b);
-
-                       var fileId = new AccountFile().FileCreate(accessToken, "2017101816331900001", "测试file03",
-                           b.Length, hash, "testfile-common");
-
-                       long fileLength = new AccountFile().GetFileLength(fileId);
 
 
-                       if (b.Length - fileLength > 0)
-                       {
-                           var result = new AccountFile().FileUpload(fileId, b, fileLength);
-                       }
+            byte[] b = File.ReadAllBytes(@"G:\44.pdf");
 
-               */
+            string hash = Sha1Help.Encrypt_Sha1_16(b);
+
+            var fileId = new AccountFile().FileCreate(accessToken, "2017"+DateTime.Now.Ticks+"00005", "测试file05",
+                b.Length, hash, "testfile-common");
+
+            long fileLength = new AccountFile().GetFileLength(fileId);
+
+
+            if (b.Length - fileLength > 0)
+            {
+                var result = new AccountFile().FileUpload(fileId, b, fileLength);
+            }
+
+
 
 
 
@@ -59,7 +59,7 @@ namespace CloudCert
 
             //new Folw().StampVerify(accessToken, "李坤龙", "350628198506302037", "6217923876763525", null, "2");
 
-            /*签章*/
+            /*签章
             string newFileId =  new Folw().Stamp("1675367", new StampUserAgreement()
               {
                   pageIndex = 1,
@@ -70,7 +70,7 @@ namespace CloudCert
                   height = 50
               });
 
-
+    */
 
             // 文件下载
 
@@ -78,13 +78,13 @@ namespace CloudCert
 
             //"{\"contract_id\":\"1675367\"}"
 
-            //byte[] bbb=   new AccountFile().DownloadFile("1675367");
+            byte[] bbb = new AccountFile().DownloadFile(fileId);
 
-            //FileStream pFileStream =  File.Create(@"G:\test01-stamp.pdf");
+            FileStream pFileStream = File.Create(@"G:\45.pdf");
 
-            //pFileStream.Write(bbb, 0, bbb.Length);
+            pFileStream.Write(bbb, 0, bbb.Length);
 
-            //pFileStream.Flush();
+            pFileStream.Flush();
 
 
 
